@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T-ORL - Top Online Research Library</title>
+    <!-- 프리미엄 폰트 및 스타일시트 연결 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- [1단계] 인트로 시작 화면 -->
     <div id="intro-screen">
         <h1 class="intro-title">T-ORL</h1>
         <p class="intro-subtitle">Top Online Research Library</p>
         <button class="start-rect-btn" onclick="enterMainApp()">연구실 입장하기</button>
     </div>
 
+    <!-- 메인 앱 전체 화면 레이아웃 -->
     <div class="app-container">
         
+        <!-- 좌측 사이드바 메뉴 -->
         <aside class="sidebar">
             <div>
                 <h2>학문 카테고리</h2>
@@ -29,27 +33,33 @@
             </div>
         </aside>
 
+        <!-- 우측 메인 콘텐츠 공간 -->
         <main class="main-content">
             <header class="header">
                 <h1 class="logo-main">T-ORL</h1>
                 <p class="logo-sub">Top Online Research Library</p>
             </header>
 
+            <!-- 검색창 -->
             <div class="search-box">
                 <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" placeholder="검색어를 입력하면 관련 제목을 가진 글을 보여줍니다">
+                <input type="text" class="search-input" oninput="searchPosts()" id="searchInput" placeholder="검색어를 입력하면 관련 제목을 가진 글을 보여줍니다">
             </div>
 
+            <!-- 연구 기록 카드들이 자동으로 생성되는 곳 -->
             <section id="results-area">
-                </section>
+                <!-- 자바스크립트가 여기에 실시간으로 글 카드를 채워 넣습니다 -->
+            </section>
         </main>
     </div>
 
+    <!-- 우측 하단 원형 글쓰기 플로팅 버튼 -->
     <div class="fab-group">
         <button class="write-fab" onclick="openStep1()">✏️</button>
     </div>
 
-    <div id="modal-step1" class="modal">
+    <!-- [팝업 1단계] 과목 선택 모달 창 -->
+    <div id="modal-step1" class="modal" onclick="closeModalOnBackdrop(event, 'modal-step1')">
         <div class="modal-content">
             <span class="close-mini" onclick="closeSpecificModal('modal-step1')">&times;</span>
             <h3>과목을 선택하세요</h3>
@@ -60,19 +70,45 @@
         </div>
     </div>
 
-    <div id="modal-step2" class="modal">
+    <!-- [팝업 2단계] 연구 기록 내용 입력/수정 모달 창 -->
+    <div id="modal-step2" class="modal" onclick="closeModalOnBackdrop(event, 'modal-step2')">
         <div class="modal-content">
             <span class="close-mini" onclick="closeSpecificModal('modal-step2')">&times;</span>
-            <h3>연구 기록하기</h3>
-            <input type="text" placeholder="작성자 이름을 입력하세요">
-            <input type="text" placeholder="글 제목을 입력하세요">
-            <textarea rows="6" placeholder="연구 내용을 상세히 적어주세요..."></textarea>
+            <h3 id="write-modal-title">연구 기록하기</h3>
+            <input type="text" id="authorInput" placeholder="작성자 이름을 입력하세요">
+            <input type="text" id="titleInput" placeholder="글 제목을 입력하세요">
+            <textarea id="contentInput" rows="6" placeholder="연구 내용을 상세히 적어주세요..."></textarea>
             <div style="text-align: right; margin-top: 15px;">
                 <button class="start-rect-btn" style="padding: 8px 20px; font-size: 0.95rem;" onclick="savePostData()">업로드</button>
             </div>
         </div>
     </div>
 
+    <!-- [팝업 3단계] 연구 상세 보기 모달 창 (복원 완료) -->
+    <div id="modal-view" class="modal" onclick="closeModalOnBackdrop(event, 'modal-view')">
+        <div class="modal-content">
+            <span class="close-mini" onclick="closeSpecificModal('modal-view')">&times;</span>
+            <span id="view-category" class="post-category"></span>
+            <h3 id="view-title" style="margin-bottom: 8px; font-size: 1.4rem;"></h3>
+            <p id="view-author" class="post-author" style="margin-bottom: 20px; border-bottom: 1px solid #e8e3d7; padding-bottom: 12px;"></p>
+            <div id="view-content" style="font-size: 1rem; line-height: 1.6; color: #444; white-space: pre-wrap; max-height: 350px; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <!-- [팝업 4단계] 보관함 안내 부드러운 커스텀 모달 창 (막힘 현상 해결) -->
+    <div id="modal-archive" class="modal" onclick="closeModalOnBackdrop(event, 'modal-archive')">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-mini" onclick="closeSpecificModal('modal-archive')">&times;</span>
+            <h3 style="color: #2a2825; margin-bottom: 15px;">📁 연구 보관함 안내</h3>
+            <p style="font-size: 0.95rem; line-height: 1.6; color: #5c564f; text-align: left; margin-bottom: 22px;">
+                현재 작성하신 모든 연구 기록은 이미 실시간으로 이 기기(로컬 스토리지)에 100% 영구 안전 저장되고 있으며 메인 화면에 바로 나타납니다!<br><br>
+                따로 모아보는 별도의 전용 보관함 창 기능은 다음 업데이트 버전에 반영될 예정입니다.
+            </p>
+            <button class="start-rect-btn" style="padding: 10px 35px; font-size: 0.95rem; border-radius: 10px;" onclick="closeSpecificModal('modal-archive')">확인</button>
+        </div>
+    </div>
+
+    <!-- 자바스크립트 파일 연결 -->
     <script src="script.js"></script>
 </body>
 </html>
