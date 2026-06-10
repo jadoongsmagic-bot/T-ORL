@@ -59,7 +59,7 @@ body {
 
 /* 메인 구조 앱 컨테이너 */
 .app-container {
-    display: none; /* 처음에 숨김 */
+    display: none;
     width: 100vw;
     height: 100vh;
 }
@@ -84,7 +84,6 @@ body {
     padding-left: 10px;
 }
 
-/* 개별 변경된 사이드바 버튼 그룹 */
 .category-btn, .menu-extra-btn {
     display: block;
     width: 100%;
@@ -106,7 +105,6 @@ body {
     color: #2a2825;
 }
 
-/* 카테고리 활성화 상태 불빛 */
 .category-btn.active {
     background-color: #2a2825;
     color: #ffffff;
@@ -179,6 +177,12 @@ body {
     max-width: 600px;
     box-shadow: 0 4px 12px rgba(42,40,37,0.02);
     position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
 }
 
 .post-category {
@@ -195,6 +199,7 @@ body {
     color: #2a2825;
     margin-bottom: 8px;
     line-height: 1.4;
+    padding-right: 30px; /* 삼점 버튼과 겹치지 않게 여백 추가 */
 }
 
 .post-author {
@@ -202,7 +207,59 @@ body {
     color: #6e675d;
 }
 
-/* ⭐ [수정된 디자인] 심플 무색 따봉(좋아요) 버튼 */
+/* 삼점 버튼 및 내부 메뉴 드롭다운 디자인 복원 */
+.more-container {
+    position: absolute;
+    top: 22px;
+    right: 20px;
+}
+
+.more-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #a8a297;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.more-btn:hover {
+    color: #2a2825;
+}
+
+.more-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    background-color: #ffffff;
+    border: 1px solid #e8e3d7;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    z-index: 90;
+    min-width: 90px;
+    overflow: hidden;
+}
+
+.more-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    color: #5c564f;
+    text-align: left;
+    cursor: pointer;
+}
+
+.more-dropdown button:hover {
+    background-color: #f5f2eb;
+    color: #2a2825;
+}
+
+/* 심플 무색 따봉(좋아요) 버튼 */
 .like-btn {
     background: #ffffff;
     border: 1px solid #e3ded5;
@@ -218,7 +275,6 @@ body {
     transition: all 0.2s ease;
 }
 
-/* 평상시: 이모지의 노란색을 빼버리고 투명도를 낮춰 완전히 심플/무색으로 만듭니다 */
 .like-btn .like-icon {
     filter: grayscale(100%);
     opacity: 0.5;
@@ -230,7 +286,6 @@ body {
     border-color: #b8b2a6;
 }
 
-/* 클릭하여 활성화되었을 때: 파란색 테두리와 텍스트로 깔끔하게 피드백 */
 .like-btn.liked {
     background-color: #f0f7ff;
     border-color: #007bff;
@@ -238,7 +293,6 @@ body {
     font-weight: bold;
 }
 
-/* 내가 누른 글의 따봉은 흑백이 풀리고 확실하게 보입니다 */
 .like-btn.liked .like-icon {
     filter: grayscale(0%);
     opacity: 1;
@@ -325,7 +379,6 @@ body {
     border-color: #2a2825;
 }
 
-/* 팝업 1단계의 과목 선택용 버튼 */
 .modal-content div button {
     background-color: #f5f2eb;
     border: none;
