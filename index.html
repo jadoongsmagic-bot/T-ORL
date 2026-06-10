@@ -28,7 +28,7 @@
                 <button class="category-btn" onclick="selectCategory('과학', this)">과학</button>
             </div>
             <div>
-                <button class="menu-extra-btn" onclick="triggerArchiveAlert()">보관함</button>
+                <button id="archive-sidebar-btn" class="menu-extra-btn" onclick="selectArchiveView(this)">보관함</button>
                 <button class="menu-extra-btn" onclick="backToIntro()">돌아가기</button>
             </div>
         </aside>
@@ -36,9 +36,12 @@
         <!-- 우측 메인 콘텐츠 공간 -->
         <main class="main-content">
             <header class="header">
-                <h1 class="logo-main">T-ORL</h1>
-                <p class="logo-sub">Top Online Research Library</p>
+                <h1 id="main-view-title" class="logo-main">T-ORL</h1>
+                <p id="main-view-subtitle" class="logo-sub">Top Online Research Library</p>
             </header>
+
+            <!-- 보관함 내부 (쓴 글 / 담은 글) 듀얼 서브 탭 공간 -->
+            <div id="archive-tabs-container"></div>
 
             <!-- 검색창 -->
             <div class="search-box">
@@ -84,7 +87,7 @@
         </div>
     </div>
 
-    <!-- [팝업 3단계] 연구 상세 보기 모달 창 (복원 완료) -->
+    <!-- [팝업 3단계] 연구 상세 보기 모달 창 -->
     <div id="modal-view" class="modal" onclick="closeModalOnBackdrop(event, 'modal-view')">
         <div class="modal-content">
             <span class="close-mini" onclick="closeSpecificModal('modal-view')">&times;</span>
@@ -95,20 +98,6 @@
         </div>
     </div>
 
-    <!-- [팝업 4단계] 보관함 안내 부드러운 커스텀 모달 창 (막힘 현상 해결) -->
-    <div id="modal-archive" class="modal" onclick="closeModalOnBackdrop(event, 'modal-archive')">
-        <div class="modal-content" style="text-align: center;">
-            <span class="close-mini" onclick="closeSpecificModal('modal-archive')">&times;</span>
-            <h3 style="color: #2a2825; margin-bottom: 15px;">📁 연구 보관함 안내</h3>
-            <p style="font-size: 0.95rem; line-height: 1.6; color: #5c564f; text-align: left; margin-bottom: 22px;">
-                현재 작성하신 모든 연구 기록은 이미 실시간으로 이 기기(로컬 스토리지)에 100% 영구 안전 저장되고 있으며 메인 화면에 바로 나타납니다!<br><br>
-                따로 모아보는 별도의 전용 보관함 창 기능은 다음 업데이트 버전에 반영될 예정입니다.
-            </p>
-            <button class="start-rect-btn" style="padding: 10px 35px; font-size: 0.95rem; border-radius: 10px;" onclick="closeSpecificModal('modal-archive')">확인</button>
-        </div>
-    </div>
-
-    <!-- 자바스크립트 파일 연결 -->
     <script src="script.js"></script>
 </body>
 </html>
