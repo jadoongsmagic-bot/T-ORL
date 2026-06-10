@@ -20,12 +20,12 @@
         <aside class="sidebar">
             <div>
                 <h2>학문 카테고리</h2>
-                <button class="subject-btn active" onclick="changeCategory('수학'); this.classList.add('active');">수학</button>
-                <button class="subject-btn" onclick="changeCategory('과학'); this.classList.add('active');">과학</button>
+                <button class="category-btn active" onclick="selectCategory('수학', this)">수학</button>
+                <button class="category-btn" onclick="selectCategory('과학', this)">과학</button>
             </div>
             <div>
-                <button class="subject-btn">보관함</button>
-                <button class="subject-btn">돌아가기</button>
+                <button class="menu-extra-btn" onclick="triggerArchiveAlert()">보관함</button>
+                <button class="menu-extra-btn" onclick="backToIntro()">돌아가기</button>
             </div>
         </aside>
 
