@@ -105,13 +105,13 @@ body {
     color: #2a2825;
 }
 
-.category-btn.active {
+.category-btn.active, .menu-extra-btn.active {
     background-color: #2a2825;
     color: #ffffff;
     font-weight: 700;
 }
 
-/* 우측 메인 공간 */
+/* 우측 메인 콘텐츠 정렬 */
 .main-content {
     flex: 1;
     padding: 40px 50px;
@@ -132,6 +132,40 @@ body {
 .logo-sub {
     font-size: 0.9rem;
     color: #8e887f;
+}
+
+/* 보관함 상단 전용 트렌디 서브 탭 레이아웃 */
+#archive-tabs-container {
+    display: none;
+    gap: 12px;
+    margin-bottom: 30px;
+    background-color: #f5f2eb;
+    padding: 6px;
+    border-radius: 16px;
+}
+
+.archive-tab-btn {
+    background: transparent;
+    border: none;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #5c564f;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.archive-tab-btn:hover {
+    background-color: rgba(42, 40, 37, 0.05);
+    color: #2a2825;
+}
+
+.archive-tab-btn.active {
+    background-color: #ffffff;
+    color: #2a2825;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 /* 검색창 */
@@ -199,7 +233,7 @@ body {
     color: #2a2825;
     margin-bottom: 8px;
     line-height: 1.4;
-    padding-right: 30px; /* 삼점 버튼과 겹치지 않게 여백 추가 */
+    padding-right: 30px;
 }
 
 .post-author {
@@ -207,7 +241,7 @@ body {
     color: #6e675d;
 }
 
-/* 삼점 버튼 및 내부 메뉴 드롭다운 디자인 복원 */
+/* 삼점 버튼 제어 드롭다운 디자인 */
 .more-container {
     position: absolute;
     top: 22px;
@@ -238,7 +272,7 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     z-index: 90;
-    min-width: 90px;
+    min-width: 120px;
     overflow: hidden;
 }
 
