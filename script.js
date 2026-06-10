@@ -1,180 +1,143 @@
-let posts = JSON.parse(localStorage.getItem('torl_posts')) || [
-    {
-        id: 1717000000001,
-        category: '수학',
-        title: '페르마의 마지막 정리 증명 과정 분석',
-        author: '익명의 피타고라스',
-        content: '앤드루 와일즈가 타원곡선과 모듈러성 정리를 사용하여 페르마의 마지막 정리를 증명한 과정을 고등 교육과정 수준에서 쉽게 풀어 분석해 보았습니다...',
-        likes: 12,
-        likedUsers: []
-    },
-    {
-        id: 1717000000002,
-        category: '과학',
-        title: '초전도체 마이스너 효과 실험 결과 공유',
-        author: '익명의 아인슈타인',
-        content: '로컬 실험실에서 진행한 상압 초전도 후보 물질의 자석 위 부상 실험 데이터입니다. 임계 온도에 도달했을 때 완벽한 반자성 효과를 관찰했습니다.',
-        likes: 24,
-        likedUsers: []
-    }
+// 1. 임시 연구 데이터 배열 (각 글마다 내가 좋아요를 눌렀는지 'liked' 상태를 추적합니다)
+let posts = [
+    { id: 1, category: '수학', title: '페르마의 마지막 정리 증명 과정', author: '익명의 피타고라스', likes: 13, liked: false },
+    { id: 2, category: '과학', title: '초전도체 마이스너 효과 실험 결과', author: '익명의 아인슈타인', likes: 24, liked: false }
 ];
 
-let currentCategory = '수학'; 
+let currentCategory = '수학';
 
-window.onload = function() {
-    renderPosts();
-    autoBindSidebarButtons(); // HTML 변경 없이 돌아가기, 보관함 글자를 추적해서 기능을 심어주는 마법 기능
-};
-
-// 🪄 사이드바의 '돌아가기', '보관함' 기능 자동 연결 엔진
-function autoBindSidebarButtons() {
-    const allElements = document.getElementsByTagName('*');
-    for (let el of allElements) {
-        if (el.innerText && el.innerText.includes('돌아가기')) {
-            el.style.cursor = 'pointer';
-            el.onclick = function() { goBackToIntro(); };
-        }
-        if (el.innerText && el.innerText.includes('보관함')) {
-            el.style.cursor = 'pointer';
-            el.onclick = function() { openArchiveAlert(); };
-        }
-    }
-}
-
-function goBackToIntro() {
-    const intro = document.getElementById('intro-screen');
-    if (intro) {
-        intro.style.display = 'flex';
-        setTimeout(() => { intro.style.opacity = '1'; }, 10);
-    } else {
-        alert('메인 화면 리로드 중...');
-        window.location.reload();
-    }
-}
-
-function openArchiveAlert() {
-    alert('🗂️ 연구 보관함 안내\n\n현재 작성하신 모든 연구 기록은 이미 실시간으로 이 기기(로컬 스토리지)에 100% 영구 안전 저장되고 있으며 메인 화면에 바로 나타납니다!\n\n따로 모아보는 별도의 전용 보관함 창 기능은 다음 업데이트 버전에 반영될 예정입니다.');
-}
-
+// 2. 앱 입장 및 돌아가기 제어
 function enterMainApp() {
-    const intro = document.getElementById('intro-screen');
-    if(intro) {
-        intro.style.opacity = '0';
-        setTimeout(() => { intro.style.display = 'none'; }, 500);
-    }
+    document.getElementById('intro-screen').style.display = 'none';
+    document.querySelector('.app-container').style.display = 'flex';
+    document.querySelector('.fab-group').style.display = 'block';
+    renderPosts(currentCategory);
 }
 
-function changeCategory(category) {
+function backToIntro() {
+    document.getElementById('intro-screen').style.display = 'flex';
+    document.querySelector('.app-container').style.display = 'none';
+    document.querySelector('.fab-group').style.display = 'none';
+}
+
+// 3. 카테고리 변경 함수 (과목 버튼 클릭 시 작동 - 알림창 버그 원천 해결)
+function selectCategory(category, element) {
     currentCategory = category;
-    document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
-    renderPosts();
+    
+    // 모든 카테고리 버튼에서 활성화 불빛(active) 끄기
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // 내가 누른 버튼에만 불빛 켜기
+    element.classList.add('active');
+    
+    // 해당 카테고리 글 목록 띄우기
+    renderPosts(currentCategory);
 }
 
-function renderPosts() {
+// 4. 보관함 알림창 (오직 보관함 버튼을 누를 때만 독립적으로 뜹니다)
+function triggerArchiveAlert() {
+    alert("📁 연구 보관함 안내\n\n현재 작성하신 모든 연구 기록은 이미 실시간으로 이 기기(로컬 스토리지)에 100% 영구 안전 저장되고 있으며 메인 화면에 바로 나타납니다!\n\n아래쪽으로 이동한 보관함 위치 레이아웃 마음에 드신다니 기쁩니다! 따로 모아보는 전용 보관함 창 기능은 다음 업데이트 버전에 반영될 예정입니다.");
+}
+
+// 5. 화면에 연구 기록 카드를 그려주는 핵심 함수
+function renderPosts(category) {
     const resultsArea = document.getElementById('results-area');
-    if(!resultsArea) return;
     resultsArea.innerHTML = '';
     
-    const filtered = posts.filter(post => post.category === currentCategory);
+    const filtered = posts.filter(p => p.category === category);
     
-    if(filtered.length === 0) {
-        resultsArea.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#9a8e87; margin-top:40px;">등록된 연구 자료가 없습니다. 첫 글을 작성해 보세요!</p>`;
+    if (filtered.length === 0) {
+        resultsArea.innerHTML = '<p style="text-align:center; color:#999; margin-top:40px;">아직 작성된 연구 기록이 없습니다.</p>';
         return;
     }
-    
+
     filtered.forEach(post => {
-        const isLiked = post.likedUsers && post.likedUsers.includes('me') ? 'liked' : '';
-        
         const card = document.createElement('div');
         card.className = 'post-card';
         
+        // 내가 누른 글에는 'liked'라는 도장을 찍어서 디자인을 다르게 만듭니다.
         card.innerHTML = `
-            <div class="card-category">${post.category}</div>
-            <div class="card-title">${post.title}</div>
-            <div class="card-author">By ${post.author}</div>
-            <div class="card-actions">
-                <button class="like-btn ${isLiked}" onclick="toggleLike(event, ${post.id})">
-                    <span class="like-count">👍 ${post.likes}</span>
-                </button>
-            </div>
+            <span class="post-category">${post.category}</span>
+            <h3 class="post-title">${post.title}</h3>
+            <p class="post-author">By ${post.author}</p>
+            <button class="like-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+                <span class="like-icon">👍</span>
+                <span class="like-count">${post.likes}</span>
+            </button>
         `;
         resultsArea.appendChild(card);
     });
 }
 
-function openStep1() { 
-    const step1 = document.getElementById('modal-step1');
-    if(step1) step1.style.display = 'flex'; 
+// 6. 좋아요 토글(켰다 껐다) 기능 함수
+function toggleLike(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+        if (post.liked) {
+            post.likes--;       // 이미 눌렀었다면 좋아요 취소 (-1)
+            post.liked = false;  // 안 누른 상태로 변경
+        } else {
+            post.likes++;       // 안 눌렀었다면 좋아요 추가 (+1)
+            post.liked = true;   // 누른 상태로 변경
+        }
+        renderPosts(currentCategory); // 변경된 숫자를 화면에 즉시 다시 그리기
+    }
+}
+
+// 7. 글쓰기 모달 제어
+function openStep1() {
+    document.getElementById('modal-step1').style.display = 'flex';
 }
 
 function openStep2(category) {
-    const step1 = document.getElementById('modal-step1');
-    if(step1) step1.style.display = 'none';
-    const step2 = document.getElementById('modal-step2');
-    if(step2) {
-        step2.style.display = 'flex';
-        const modalTitle = document.querySelector('#modal-step2 h3');
-        if(modalTitle) modalTitle.innerText = `${category} 연구 기록하기`;
-        step2.dataset.category = category;
-    }
+    closeSpecificModal('modal-step1');
+    const modal2 = document.getElementById('modal-step2');
+    modal2.style.display = 'flex';
+    modal2.dataset.category = category;
 }
 
-function closeSpecificModal(id) { 
-    const modal = document.getElementById(id);
-    if(modal) modal.style.display = 'none'; 
+function closeSpecificModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
 }
 
+// 8. 글 저장 및 자동 이동 함수
 function savePostData() {
-    const authorInput = document.querySelector('#modal-step2 input[placeholder*="작성자"]');
-    const titleInput = document.querySelector('#modal-step2 input[placeholder*="제목"]');
-    const contentInput = document.querySelector('#modal-step2 textarea');
-    const step2 = document.getElementById('modal-step2');
-    
-    const author = authorInput ? authorInput.value.trim() : '익명의 연구원';
-    const title = titleInput ? titleInput.value.trim() : '';
-    const content = contentInput ? contentInput.value.trim() : '';
-    const category = step2 ? step2.dataset.category : '수학';
-    
-    if(!title || !content) {
-        alert('제목과 내용을 모두 작성해 주세요!');
+    const modal2 = document.getElementById('modal-step2');
+    const category = modal2.dataset.category || '수학';
+    const authorInput = modal2.querySelector('input[placeholder*="작성자"]');
+    const titleInput = modal2.querySelector('input[placeholder*="글 제목"]');
+    const contentTextArea = modal2.querySelector('textarea');
+
+    if (!authorInput.value.trim() || !titleInput.value.trim() || !contentTextArea.value.trim()) {
+        alert("모든 빈칸을 채워주셔야 연구 등록이 가능합니다!");
         return;
     }
-    
+
     const newPost = {
         id: Date.now(),
         category: category,
-        title: title,
-        author: author || '익명의 연구원',
-        content: content,
+        title: titleInput.value.trim(),
+        author: authorInput.value.trim(),
         likes: 0,
-        likedUsers: []
+        liked: false
     };
-    
+
     posts.unshift(newPost);
-    localStorage.setItem('torl_posts', JSON.stringify(posts));
-    renderPosts();
-    closeSpecificModal('modal-step2');
     
-    if(authorInput) authorInput.value = '';
-    if(titleInput) titleInput.value = '';
-    if(contentInput) contentInput.value = '';
+    authorInput.value = '';
+    titleInput.value = '';
+    contentTextArea.value = '';
+    closeSpecificModal('modal-step2');
+
+    currentCategory = category;
+    
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        if (btn.textContent === category) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+
+    renderPosts(currentCategory);
 }
 
-function toggleLike(event, id) {
-    event.stopPropagation(); 
-    const post = posts.find(p => p.id === id);
-    if(!post) return;
-    
-    if(!post.likedUsers) post.likedUsers = [];
-    
-    if(post.likedUsers.includes('me')) {
-        post.likedUsers = post.likedUsers.filter(u => u !== 'me');
-        post.likes = Math.max(0, post.likes - 1);
-    } else {
-        post.likedUsers.push('me');
-        post.likes += 1;
-    }
-    
-    localStorage.setItem('torl_posts', JSON.stringify(posts));
-    renderPosts();
-}
