@@ -4,123 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T-ORL - Top Online Research Library</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="intro-screen">
         <h1 class="intro-title">T-ORL</h1>
-        <p class="intro-subtitle">쓰고, 공유하고, 배워라!</p>
-        <button class="start-rect-btn" onclick="enterMainApp()">시작하기</button>
+        <p class="intro-subtitle">Top Online Research Library</p>
+        <button class="start-rect-btn" onclick="enterMainApp()">연구실 입장하기</button>
     </div>
 
-    <div class="app-container" id="app">
-        <div class="sidebar">
-            <h2>과목 선택</h2>
-            <button class="subject-btn active" id="tab-math" onclick="changeCategory('수학')">수학</button>
-            <button class="subject-btn" id="tab-science" onclick="changeCategory('과학')">과학</button>
-        </div>
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div>
+                <h2>학문 카테고리</h2>
+                <button class="subject-btn active" onclick="changeCategory('수학'); this.classList.add('active');">수학</button>
+                <button class="subject-btn" onclick="changeCategory('과학'); this.classList.add('active');">과학</button>
+            </div>
+            <div>
+                <button class="subject-btn">보관함</button>
+                <button class="subject-btn">돌아가기</button>
+            </div>
+        </aside>
 
-        <div class="main-content">
-            <div class="header">
+        <main class="main-content">
+            <header class="header">
                 <h1 class="logo-main">T-ORL</h1>
                 <p class="logo-sub">Top Online Research Library</p>
-            </div>
+            </header>
 
             <div class="search-box">
-                <span class="material-icons search-icon">search</span>
-                <input type="text" class="search-input" id="searchInput" placeholder="검색어를 입력하면 관련 제목을 가진 글을 보여줍니다" onkeyup="searchPosts()" autocomplete="off" spellcheck="false">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="검색어를 입력하면 관련 제목을 가진 글을 보여줍니다">
             </div>
 
-            <div id="results-area"></div>
-        </div>
+            <section id="results-area">
+                </section>
+        </main>
     </div>
 
-    <div class="fab-group" id="fabGroup" style="display: none;">
-        <button class="write-fab" id="fab-write" onclick="openStep1()" title="연구 기록하기">
-            <span class="material-icons">edit</span>
-        </button>
-        <div class="archive-mini-row">
-            <button class="archive-fab" onclick="openArchiveView('likes')" title="추천 보관함">
-                <span class="material-icons">thumb_up</span>
-            </button>
-            <button class="archive-fab" onclick="openArchiveView('my')" title="내가 쓴 글 보관함">
-                <span class="material-icons">folder_shared</span>
-            </button>
-        </div>
+    <div class="fab-group">
+        <button class="write-fab" onclick="openStep1()">✏️</button>
     </div>
 
-    <div class="modal" id="modal-step1" onclick="closeModalOnBackdrop(event, 'modal-step1')">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="material-icons close-mini" onclick="closeSpecificModal('modal-step1')">close</span>
-            <div class="subject-select-grid">
-                <button class="sel-btn math" onclick="openStep2('수학')">수학</button>
-                <button class="sel-btn science" onclick="openStep2('과학')">과학</button>
-            </div>
-            <p class="select-helper-text">과목을 선택하세요</p>
-        </div>
-    </div>
-
-    <div class="modal" id="modal-step2" onclick="closeModalOnBackdrop(event, 'modal-step2')">
-        <div class="modal-content write-modal" onclick="event.stopPropagation()">
-            <span class="material-icons close-mini" onclick="closeSpecificModal('modal-step2')">close</span>
-            <button class="upload-btn" id="submitBtn" onclick="savePostData()">업로드</button>
-            <h3 id="write-modal-title" class="modal-title">글 작성</h3>
-            
-            <input type="text" id="authorInput" class="write-input" placeholder="작성자 칸" onfocus="togglePrivacyMemo(true)" onblur="togglePrivacyMemo(false)" autocomplete="off" spellcheck="false">
-            <div id="privacy-popup">
-                <p>개인정보 보호를 위해 익명을 사용해 주세요</p>
-            </div>
-            
-            <input type="text" id="titleInput" class="write-input" placeholder="글 제목 칸" autocomplete="off" spellcheck="false">
-            
-            <div class="textarea-wrapper">
-                <textarea id="contentInput" class="write-textarea" placeholder="내용 작성 칸..." spellcheck="false"></textarea>
-                <label class="inner-img-btn">
-                    <span class="material-icons">image</span>사진 업로드
-                    <input type="file" id="imageFileEngine" accept="image/*" style="display: none;" onchange="processImageUpload(this)">
-                </label>
-                <span id="imgPreviewNotification">✓ 사진 첨부됨</span>
+    <div id="modal-step1" class="modal">
+        <div class="modal-content">
+            <span class="close-mini" onclick="closeSpecificModal('modal-step1')">&times;</span>
+            <h3>과목을 선택하세요</h3>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="openStep2('수학')">수학</button>
+                <button onclick="openStep2('과학')">과학</button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="modal-view" onclick="closeModalOnBackdrop(event, 'modal-view')">
-        <div class="view-modal-content" onclick="event.stopPropagation()">
-            <span class="material-icons close-mini" onclick="closeSpecificModal('modal-view')">close</span>
-            <div class="view-header">
-                <div class="view-title" id="viewTitle">글 제목</div>
-                <div class="view-info" id="viewInfo">작성자 정보</div>
-                <span class="material-icons more-btn" onclick="toggleMoreMenu(event)">more_vert</span>
-                <div class="more-menu" id="moreMenu">
-                    <button class="menu-item" id="menu-edit" onclick="openModifyForm()">수정하기</button>
-                    <button class="menu-item" onclick="copyToClipboard()">복사하기</button>
-                    <button class="menu-item delete" id="menu-delete" onclick="openDeleteAlert()">삭제하기</button>
-                </div>
-            </div>
-            <img id="viewImageFrame" alt="첨부 이미지">
-            <div class="view-body" id="viewBody">내용</div>
-        </div>
-    </div>
-
-    <div class="full-overlay" id="fullArchiveOverlay">
-        <div class="overlay-navbar">
-            <button class="back-rect-btn" onclick="closeArchiveView()">
-                <span class="material-icons">arrow_back</span>돌아가기
-            </button>
-            <div class="overlay-title" id="archiveDisplayTitle">보관함</div>
-        </div>
-        <div class="overlay-grid" id="archive-results-area"></div>
-    </div>
-
-    <div class="modal" id="modal-warning">
-        <div class="modal-content" style="max-width: 380px; text-align: center;">
-            <h3 style="color: #ef4444; font-size: 20px;">⚠️ 삭제 경고</h3>
-            <p style="margin-top: 12px; font-weight: bold; color: #4a5366;">이 글을 영구히 삭제하시겠습니까?</p>
-            <div class="alert-btn-box">
-                <button class="alert-btn cancel" onclick="closeSpecificModal('modal-warning')">취소</button>
-                <button class="alert-btn confirm" onclick="executeDelete()">삭제</button>
+    <div id="modal-step2" class="modal">
+        <div class="modal-content">
+            <span class="close-mini" onclick="closeSpecificModal('modal-step2')">&times;</span>
+            <h3>연구 기록하기</h3>
+            <input type="text" placeholder="작성자 이름을 입력하세요">
+            <input type="text" placeholder="글 제목을 입력하세요">
+            <textarea rows="6" placeholder="연구 내용을 상세히 적어주세요..."></textarea>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="start-rect-btn" style="padding: 8px 20px; font-size: 0.95rem;" onclick="savePostData()">업로드</button>
             </div>
         </div>
     </div>
